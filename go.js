@@ -32,27 +32,32 @@ class goBoard {
             let hasAir = this.haveair(x, y, shadowBoard);
             if (hasAir) {
                 this.addPieces(x, y, type);
-                let deads = [];
-                let type1 = 0;
-                for(let i = 0; i < this.board.length; i++) {
-                    for (let j = 0; j < this.board.length; j++) {
-                        let c = this.board[i][j]
-                        if (c === 0) {
-                            continue
-                        } else {
-                            type = c;
-                            let alive = this.haveair(i, j, this.board);
-                            if (!alive) {
-                                deads.push([i,j]);
-                            }
-                        }
-                    }
-                }
-                this.clearDeadPieces(deads, type1);
+                this.findAllDeadPieces();
             } else {
                 console.log('没有气');
+                let hasDead = false;
             }
         }
+    }
+
+    findAllDeadPieces() {
+        let deads = [];
+        let type1 = 0;
+        for(let i = 0; i < this.board.length; i++) {
+            for (let j = 0; j < this.board.length; j++) {
+                let c = this.board[i][j]
+                if (c === 0) {
+                    continue
+                } else {
+                    type = c;
+                    let alive = this.haveair(i, j, this.board);
+                    if (!alive) {
+                        deads.push([i,j]);
+                    }
+                }
+            }
+        }
+        this.clearDeadPieces(deads, type1);
     }
 
     clearDeadPieces(deads, type) {
@@ -132,4 +137,10 @@ nineteen.addPieces(6,1,2)
 console.table(nineteen.board);
 
 nineteen.putChess(6, 7, 1)
+console.table(nineteen.board);
+nineteen.putChess(6, 6, 2)
+// nineteen.putChess(6, 7, 2)
+nineteen.putChess(5, 7, 2)
+nineteen.putChess(7, 5, 2)
+nineteen.putChess(7, 7, 2)
 console.table(nineteen.board);
