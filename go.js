@@ -27,37 +27,58 @@ class goBoard {
                 msg: '已经有棋子，无法落子'
             }
         } else {
-            shadowBoard[x][y] = 1;
+            shadowBoard[x][y] = type;
             // 下进去后这个子是否有气
             let hasAir = this.haveair(x, y, shadowBoard);
             if (hasAir) {
                 this.addPieces(x, y, type);
-                this.findAllDeadPieces();
+                let { whitedeads, blackdeads } = this.findAllDeadPieces(shadowBoard);
+                if (type === 1) {
+                    this.clearDeadPieces(blackdeads, 2);
+                } else {
+                    this.clearDeadPieces(whitedeads, 1);
+                }
             } else {
-                console.log('没有气');
-                let hasDead = false;
+                let { whitedeads, blackdeads } = this.findAllDeadPieces(shadowBoard);
+                if (whitedeads.length > 0 && blackdeads.length > 0) {
+                    this.addPieces(x, y, type);
+                    if (type === 1) {
+                        this.clearDeadPieces(blackdeads, 2);
+                    } else {
+                        this.clearDeadPieces(whitedeads, 1);
+                    }
+                } else {
+                    console.log('禁入点禁止落子');
+                }
             }
         }
     }
 
-    findAllDeadPieces() {
-        let deads = [];
-        let type1 = 0;
-        for(let i = 0; i < this.board.length; i++) {
-            for (let j = 0; j < this.board.length; j++) {
-                let c = this.board[i][j]
+    findAllDeadPieces(board) {
+        let whitedeads = [];
+        let blackdeads = [];
+        for(let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board.length; j++) {
+                let c = board[i][j]
                 if (c === 0) {
                     continue
-                } else {
-                    type = c;
-                    let alive = this.haveair(i, j, this.board);
+                } else if (c === 1){
+                    let alive = this.haveair(i, j, board);
                     if (!alive) {
-                        deads.push([i,j]);
+                        whitedeads.push([i,j]);
+                    }
+                } else if (c === 2) {
+                    let alive = this.haveair(i, j, board);
+                    if (!alive) {
+                        blackdeads.push([i,j]);
                     }
                 }
             }
         }
-        this.clearDeadPieces(deads, type1);
+        return {
+            whitedeads,
+            blackdeads
+        }
     }
 
     clearDeadPieces(deads, type) {
@@ -137,10 +158,9 @@ nineteen.addPieces(6,1,2)
 console.table(nineteen.board);
 
 nineteen.putChess(6, 7, 1)
-console.table(nineteen.board);
 nineteen.putChess(6, 6, 2)
-// nineteen.putChess(6, 7, 2)
 nineteen.putChess(5, 7, 2)
 nineteen.putChess(7, 5, 2)
 nineteen.putChess(7, 7, 2)
 console.table(nineteen.board);
+nineteen.putChess(7, 6, 1)
