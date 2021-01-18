@@ -31,6 +31,7 @@ class goBoard {
             // 下进去后这个子是否有气
             let hasAir = this.haveair(x, y, shadowBoard);
             if (hasAir) {
+                // 直接添加棋子并且清除死子
                 this.addPieces(x, y, type);
                 let { whitedeads, blackdeads } = this.findAllDeadPieces(shadowBoard);
                 if (type === 1) {
@@ -41,6 +42,7 @@ class goBoard {
             } else {
                 let { whitedeads, blackdeads } = this.findAllDeadPieces(shadowBoard);
                 if (whitedeads.length > 0 && blackdeads.length > 0) {
+                    // 若无气但能提子
                     this.addPieces(x, y, type);
                     if (type === 1) {
                         this.clearDeadPieces(blackdeads, 2);
@@ -48,6 +50,7 @@ class goBoard {
                         this.clearDeadPieces(whitedeads, 1);
                     }
                 } else {
+                    // 若无气并且无法提子
                     console.log('禁入点禁止落子');
                 }
             }
@@ -122,7 +125,12 @@ class goBoard {
                     }  else if (board[dx][dy] !== color) {
                         continue
                     } else {
-                        return this.dfs(dx, dy, visitedList, board)
+                        flag = this.dfs(dx, dy, visitedList, board)
+                        if (flag) {
+                            return flag
+                        } else {
+                            continue
+                        }
                     }
                 } else {
                     continue;
@@ -133,34 +141,6 @@ class goBoard {
     }
 }
 
-
-
-let nineteen = new goBoard(8)
-nineteen.addPieces(1,1,1)
-nineteen.addPieces(1,2,1)
-nineteen.addPieces(1,3,1)
-nineteen.addPieces(2,2,1)
-nineteen.addPieces(2,3,1)
-nineteen.addPieces(1,4,1)
-nineteen.addPieces(1,5,1)
-nineteen.addPieces(4,5,1)
-nineteen.addPieces(7,7,2)
-// nineteen.addPieces(6,7,1)
-
-nineteen.addPieces(7,6,1)
-nineteen.addPieces(2,6,2)
-nineteen.addPieces(5,1,2)
-
-nineteen.addPieces(6,1,2)
-// nineteen.addPieces(1,1,2)
-// nineteen.addPieces(1,1,2)
-
-console.table(nineteen.board);
-
-nineteen.putChess(6, 7, 1)
-nineteen.putChess(6, 6, 2)
-nineteen.putChess(5, 7, 2)
-nineteen.putChess(7, 5, 2)
-nineteen.putChess(7, 7, 2)
-console.table(nineteen.board);
-nineteen.putChess(7, 6, 1)
+module.exports = {
+    board: goBoard
+}
