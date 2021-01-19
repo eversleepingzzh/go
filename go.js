@@ -1,16 +1,23 @@
 const deepcloneArray = require('./utils').deepcloneArray;
-
+const compareArray = require('./utils').compareArray;
 
 class goBoard {
     board
     deadBlack = 0
     deadWhite = 0
+    history = []
     constructor(size) {
         this.size = size
         this.board = new Array(size).fill(0);
         for (let i = 0; i < size; i++) {
             this.board[i] = new Array(size).fill(0)
         }
+        this.history.push(deepcloneArray(this.board));
+    }
+
+    generateBoard(board) {
+        this.board = board;
+        this.history.push(deepcloneArray(this.board));
     }
 
     
@@ -22,9 +29,11 @@ class goBoard {
         let shadowBoard = deepcloneArray(this.board);
         // console.table(shadowBoard)
         if (this.board[x][y] !==0) {
+            let msg = '已经有棋子，无法落子';
+            console.log(msg)
             return {
                 code: 0,
-                msg: '已经有棋子，无法落子'
+                msg,
             }
         } else {
             shadowBoard[x][y] = type;
@@ -49,12 +58,20 @@ class goBoard {
                     } else {
                         this.clearDeadPieces(whitedeads, 1);
                     }
+                    // 判断是否为劫
+                    if (this.history.length >= 2 && compareArray(this.board, this.history[this.history.length - 2])) {
+                        console.log('此回合不能提子');
+                        this.board = this.history[this.history.length - 1];
+                        return
+                    }
                 } else {
                     // 若无气并且无法提子
                     console.log('禁入点禁止落子');
+                    return;
                 }
             }
         }
+        this.history.push(deepcloneArray(this.board));
     }
 
     findAllDeadPieces(board) {
