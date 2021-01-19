@@ -1,2 +1,2 @@
 # go
- a simple go rule
+ 围棋基本规则实现， 包括打劫
