@@ -11,8 +11,8 @@ errorCode = {
 class goBoard {
     board
     _koInfo = {
-      sign = 0,
-      vertex = [-1, -1]  
+      sign: 0,
+      vertex: [-1, -1]  
     }
     constructor(size, board) {
         this.size = size
@@ -36,6 +36,7 @@ class goBoard {
 
     clone() {
         let board = new goBoard(this.size, this.board);
+        board._koInfo = this._koInfo;
         return board
     }
 
@@ -65,6 +66,9 @@ class goBoard {
                 if (deads.length === 1) {
                     this._koInfo.sign = type;
                     this._koInfo.vertex = [x, y];
+                } else {
+                    this._koInfo.sign = 0;
+                    this._koInfo.vertex = [-1, -1];
                 }
                 shadowBoard.clearDeadPieces(deads);
                 return shadowBoard
