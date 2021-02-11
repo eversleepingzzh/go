@@ -35,7 +35,7 @@ class goBoard {
     }
 
     clone() {
-        let board = new goBoard(this.size, this.board);
+        let board = new goBoard(this.size, deepcloneArray(this.board));;
         board._koInfo = this._koInfo;
         return board
     }
